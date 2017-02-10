@@ -20,29 +20,19 @@ const router = express.Router();
 // });
 
 router.get('/', (req, res) => {
-  //console.log(req.query.teamA, req.query.teamB);
-    console.log('param', req.params);
+  // console.log(req.query.teamA, req.query.teamB);
 
   User.find({
-    "$or": [
+    $or: [
       { team: req.query.teamA },
-      { team: req.query.teamB }
-    ]
+      { team: req.query.teamB },
+    ],
   })
-  .then( (data, err) => {
+  .then((data, err) => {
     if(err) console.log('송현규', err);
     console.log('data', data);
     res.send(data);
   });
 });
-
-
-
-  // User.find({ team: req.query.teamA }, (err, user) => {
-  //   if (err) return res.status(500).send({ error: 'database failure' });
-  //   if (!user) return res.status(404).json({ error: 'team not found' });
-  //   return res.json(user);
-  // });
-// });
 
 module.exports = router;
