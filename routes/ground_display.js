@@ -9,24 +9,41 @@ const router = express.Router();
 // /team/:teamname
 // /teams?teamname=abc&teamname=abc&teamname=abc&teamname=abc&teamname=abc
 
-router.get('/:team', (req, res) => {
-  console.log(1);
-  console.log(req.params);
-  User.find({ team: req.params.team }, (err, user) => {
-    if (err) return res.status(500).send({ error: 'database failure' });
-    if (!user) return res.status(404).json({ error: 'team not found' });
-    return res.json(user);
-  });
-});
-
-// router.get('/team?:team&team', (req, res) => {
+// router.get('/:team', (req, res) => {
 //   console.log(1);
 //   console.log(req.params);
-//   User.find({ team: { $all: req.params.team } }, (err, user) => {
+//   User.find({ team: req.params.team }, (err, user) => {
 //     if (err) return res.status(500).send({ error: 'database failure' });
 //     if (!user) return res.status(404).json({ error: 'team not found' });
 //     return res.json(user);
 //   });
+// });
+
+router.get('/', (req, res) => {
+  console.log(req.query.teamA, req.query.teamB);
+  console.log(1);
+  console.log(req.params);
+
+  User.find({
+    "$or": [
+      { team: req.query.teamA },
+      { team: req.query.teamB }
+    ]
+  })
+  .then( (err, data) => {
+    if(err) console.log('송현규', err);
+    console.log(data);
+    res.send("done");
+  });
+});
+
+
+
+  // User.find({ team: req.query.teamA }, (err, user) => {
+  //   if (err) return res.status(500).send({ error: 'database failure' });
+  //   if (!user) return res.status(404).json({ error: 'team not found' });
+  //   return res.json(user);
+  // });
 // });
 
 module.exports = router;
