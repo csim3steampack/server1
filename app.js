@@ -13,6 +13,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 
 const mongoose = require('mongoose');
+const session = require('express-session');
 
 const api = require('./routes/index');
 
@@ -23,7 +24,7 @@ app.use(cors());
 // ------------- 서버 변수 설정 및 static으로 public 폴더 설정  ----------- //
 
 // app.set('port', config.server_port);
-app.use('../public', express.static(path.join(__dirname, 'public')));
+app.use('../client/client-side/public', express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -37,6 +38,15 @@ db.once('open', () => { console.log('Connected to mogod server'); });
 // mongoose.connect(config.db_url);
 // mongoose.connect('mongodb://sanghun:minho@ec2-52-78-89-87.ap-northeast-2.compute.amazonaws.com/steampack');
 mongoose.connect('localhost:27017/steampack');
+
+// ---------------------use session-----------------------------
+// https://velopert.com/406
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true,
+}));
+
 // ---------------------router setting-----------------------------
 app.use('/api', api);
 
@@ -45,6 +55,13 @@ app.use('/api', api);
 //   console.log('Express is listening on port', app.get('port'));
 // });
 
+// ---------------------handle error-----------------------------
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+// ---------------------start server-----------------------------
 app.listen(port, () => {
   console.log('Express is listening on port', port);
 });
