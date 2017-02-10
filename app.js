@@ -1,0 +1,50 @@
+// hello sanghun!
+// const WebpackDevServer = require('webpack-dev-server');
+// const webpack = require('webpack');
+
+const express = require('express');
+const cors = require('cors');
+// const http = require('http');
+
+const path = require('path');
+
+// const config = require('./config/config');
+
+const bodyParser = require('body-parser');
+
+const mongoose = require('mongoose');
+
+const api = require('./routes/index');
+
+// ---------------------express server---------------------------
+const app = express();
+const port = 3000;
+app.use(cors());
+// ------------- 서버 변수 설정 및 static으로 public 폴더 설정  ----------- //
+
+// app.set('port', config.server_port);
+app.use('../public', express.static(path.join(__dirname, 'public')));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// ---------------------mongodb connection-----------------------------
+
+const db = mongoose.connection;
+db.on('error', console.error);
+db.once('open', () => { console.log('Connected to mogod server'); });
+
+// mongoose.connect(config.db_url);
+// mongoose.connect('mongodb://sanghun:minho@ec2-52-78-89-87.ap-northeast-2.compute.amazonaws.com/steampack');
+mongoose.connect('localhost:27017/steampack');
+// ---------------------router setting-----------------------------
+app.use('/api', api);
+
+// ---------------------server setting-----------------------------
+// const server = http.createServer(app).listen(process.env.PORT || app.get('port'), () => {
+//   console.log('Express is listening on port', app.get('port'));
+// });
+
+app.listen(port, () => {
+  console.log('Express is listening on port', port);
+});
