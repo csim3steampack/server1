@@ -20,9 +20,8 @@ const router = express.Router();
 // });
 
 router.get('/', (req, res) => {
-  console.log(req.query.teamA, req.query.teamB);
-  console.log(1);
-  console.log(req.params);
+  //console.log(req.query.teamA, req.query.teamB);
+    console.log('param', req.params);
 
   User.find({
     "$or": [
@@ -30,10 +29,10 @@ router.get('/', (req, res) => {
       { team: req.query.teamB }
     ]
   })
-  .then( (err, data) => {
+  .then( (data, err) => {
     if(err) console.log('송현규', err);
-    console.log(data);
-    res.send("done");
+    console.log('data', data);
+    res.send(data);
   });
 });
 
