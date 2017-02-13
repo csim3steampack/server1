@@ -36,7 +36,6 @@ User.methods.generateHash = function (password) {
 };
 
 User.methods.validateHash = function (password) {
-  console.log(this);
   return bcrypt.compareSync(password, this.password);
 };
 

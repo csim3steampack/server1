@@ -109,16 +109,13 @@ router.post('/login', (req, res) => {
 
     const token = TokenManager.generateToken(user.id);
 
-    console.log('token      : ', token);
-    console.log('user.id     : ', user.id);
-
-    const session = req.session;
-    session.loginInfo = {
-      _id: user._id,
-      id: user.id,
-    };
-    console.log(req.session);
-
+    // const session = req.session;
+    // session.loginInfo = {
+    //   _id: user._id,
+    //   id: user.id,
+    // };
+    // console.log(req.session);
+    console.log('222222222222           ', token);
     return res.json({
       success: true,
       token,
@@ -127,27 +124,48 @@ router.post('/login', (req, res) => {
 });
 
 /*
-  <세션 확인>
+  <토큰 확인> 세션(x)
   GET CURRENT USER INFO GET /api/account/getinfo
 */
 
 router.get('/getinfo', (req, res) => {
-  if (typeof req.session.loginInfo === 'undefined') {
-    return res.status(401).json({
-      error: 1,
+
+  // read the token from header or url
+  const token = req.headers['x-access-token'] || req.query.token;
+
+  const compareToken = TokenManager.getIDFromToken(token);
+  console.log('token', token);
+
+  console.log('확인하고싶다         ', compareToken);
+  // token does not exist
+  if (!token) {
+    return res.status(403).json({
+      success: false,
+      message: 'not logged in',
     });
   }
 
-  User.findOne({ _id: req.session.loginInfo._id }, (err, data) => {
-    if (err) {
-      return res.status(400).json({
-        error: 'NOT FIND SESSION ID',
-      });
-    }
-    console.log(data.id);
-    return res.json(data.id);
+  return res.json({
+    success: true,
+    info: token,
   });
 });
+  // if (typeof req.session.loginInfo === 'undefined') {
+  //   return res.status(401).json({
+  //     error: 1,
+  //   });
+  // }
+  //
+  // User.findOne({ _id: req.session.loginInfo._id }, (err, data) => {
+  //   if (err) {
+  //     return res.status(400).json({
+  //       error: 'NOT FIND SESSION ID',
+  //     });
+  //   }
+  //   console.log(data.id);
+  //   return res.json(data.id);
+  // });
+// });
 
 /*
   LOGOUT: POST /api/account/logout

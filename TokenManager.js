@@ -1,41 +1,55 @@
 const uuid = require('uuid');
 
-let tokens = {
+let tokenData = {
   // id: { id, token, expiredAt },
-  id: null,
-  token: null,
-  expiredAt: null,
+  id: 1,
+  token: 1,
+  expiredAt: 1,
 };
 
 module.exports = {
+
   generateToken: (id) => {
     const token = uuid();
     const expiredAt = new Date().getTime() + (60 * 60 * 1000);
-    console.log(id, token, expiredAt);
-    tokens = {
+    tokenData = {
       id,
       token,
       expiredAt,
     };
-    console.log(tokens);
-    return tokens;
+
+    return tokenData;
   },
+
   getIDFromToken: (token) => {
-    const findedTokenData = Object.keys(tokens).find((key) => {
-      const tokenData = tokens[key];
-      return tokenData.token === token && tokenData.expiredAt >= new Date().getTime();
-    });
-    if (findedTokenData) {
-      return findedTokenData.id;
+    // tokenData[Object.keys(tokenData)]; // ['id', 'token', 'expiredAt']
+
+    if (tokenData.token === token
+      && tokenData.expiredAt >= new Date().getTime()) {
+      return tokenData.id;
     }
+
     return null;
   },
-  /*getTokenFromID: (id) => {
-    const tokenData = tokens[id];
+};
+      //
+      // const tokenData = tokenData[key];
+      // return tokenData.token === token
+      //     && tokenData.expiredAt >= new Date().getTime();
+    // });
+  //
+  //   console.log('머니머니        ', findedTokenData);
+  //   if (findedTokenData) {
+  //     return findedTokenData.id;
+  //   }
+  //   return null;
+  // },
+  /* getTokenFromID: (id) => {
+    const tokenData = tokenData[id];
     if (tokenData) {
       return tokenData.token;
     }
     return null;
   },*/
   // TODO expiredAt 늘려주는 함수 만들기.
-};
+// };
