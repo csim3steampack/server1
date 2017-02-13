@@ -9,6 +9,7 @@ const cors = require('cors');
 const path = require('path');
 
 // const config = require('./config/config');
+const multer = require('multer');
 
 const bodyParser = require('body-parser');
 
@@ -46,6 +47,15 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }));
+
+// ---------------------use imagme-----------------------------
+// app.use(multer({
+//   dest: './uploads/',
+//   rename: function (fieldname, filename) {
+//     return filename;
+//   },
+// }));
+
 
 // ---------------------router setting-----------------------------
 app.use('/api', api);

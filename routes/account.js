@@ -5,22 +5,26 @@ const router = express.Router();
 
 /*
   <회원가입>
-  ACCOUNT SIGNUP: POST /api/account/singup
-  CODY SAMPLE : { "id" : "test" , "password": "test"}
+  ACCOUNT SIGNUP: POST /api/account/signup
+  CODY SAMPLE : { "id" : "test" , "password": "test", "mail" : "test"}
   ERROR CODES:
           1. BAD id
           2. BAD password
-          3. id EXISTS
+          3. BAD mail
+          4. id EXISTS
 */
 
 router.post('/signup', (req, res) => {
 
     // 1. BAD id
-  // const idRegex = /^[a-zA-Z]{2,10}\s[a-zA-Z]{2,10}$/; // Regex : http://sadtear.tistory.com/106
+  const idRegex = /^[a-zA-Z][a-zA-Z0-9]{3,11}$/;
+  // 첫글자는 영어, 아이디는 영어소문자, 대문자 사용가능, 4자에서 12자 사이만 가능
 
-  // if (!idRegex.test(req.body.id)) {
-  const length = req.body.id.length;
-  if (length < 2 || length > 10) {
+  console.log(req.body.id);
+  console.log(idRegex.test(req.body.id));
+  if (!idRegex.test(req.body.id)) {
+  // const length = req.body.id.length;
+  // if (length < 2 || length > 10) {
     return res.status(400).json({
       error: 'BAD ID',
       code: 1,
@@ -35,20 +39,30 @@ router.post('/signup', (req, res) => {
     });
   }
 
+    // 3. BAD mail
+  const mailRegex = /^[-!#$%&'*+./0-9=?A-Z^_a-z{|}~]+@[-!#$%&'*+/0-9=?A-Z^_a-z{|}~]+.[-!#$%&'*+./0-9=?A-Z^_a-z{|}~]+$/;
+  if (!mailRegex.test(req.body.mail)) {
+    return res.status(400).json({
+      eroor: 'BAD MAIL',
+      code: 3,
+    });
+  }
+
   User.findOne({ id: req.body.id }, (err, exists) => {
     if (err) throw err;
 
-    // 3. id EXISTS
+    // 4. id EXISTS
     if (exists) {
       return res.status(409).json({
         error: 'ID EXISTS',
-        code: 3,
+        code: 4,
       });
     }
 
     const user = new User({
       id: req.body.id,
       password: req.body.password,
+      mail: req.body.mail,
     });
 
     user.password = user.generateHash(user.password);
@@ -63,7 +77,7 @@ router.post('/signup', (req, res) => {
 /*
   <로그인>
   ACCOUNT SIGNIN: POST /api/account/SIGNIN
-  BODY SAMPLE: { "id": "test", "password": "test" }
+  BODY SAMPLE: { "id": "test", "password": "test", "mail" : "test" }
   ERROR CODES:
           1: LOGIN FAILED
 */
@@ -106,7 +120,7 @@ router.post('/login', (req, res) => {
 
 /*
   <세션 확인>
-  GET CURRENT USER INFO GET /api/account/getInfo
+  GET CURRENT USER INFO GET /api/account/getinfo
 */
 
 router.get('/getinfo', (req, res) => {

@@ -21,17 +21,17 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
   // console.log(req.query.teamA, req.query.teamB);
-
+  console.log(req.query);
   User.find({
     $or: [
-      { team: req.query.teamA },
-      { team: req.query.teamB },
+      { team: { $in: req.query.teamA } },
+      { team: { $in: req.query.teamB } },
     ],
   })
   .then((data, err) => {
     if(err) console.log('송현규', err);
     console.log('data', data);
-    res.send(data);
+    res.json(data);
   });
 });
 
