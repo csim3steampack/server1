@@ -20,8 +20,6 @@ router.post('/signup', (req, res) => {
   const idRegex = /^[a-zA-Z][a-zA-Z0-9]{3,11}$/;
   // 첫글자는 영어, 아이디는 영어소문자, 대문자 사용가능, 4자에서 12자 사이만 가능
 
-  console.log(req.body.id);
-  console.log(idRegex.test(req.body.id));
   if (!idRegex.test(req.body.id)) {
   // const length = req.body.id.length;
   // if (length < 2 || length > 10) {
@@ -107,12 +105,14 @@ router.post('/login', (req, res) => {
         code: 1,
       });
     }
-    // console.log(session);
-    const session = req.session;
+
+    console.log(user.id);
+    let session = req.session;
     session.loginInfo = {
       _id: user._id,
       id: user.id,
     };
+    console.log(req.session);
 
     return res.json({ success: true });
   });
@@ -130,7 +130,15 @@ router.get('/getinfo', (req, res) => {
     });
   }
 
-  return res.json({ info: req.session.loginInfo });
+  User.findOne({ _id: req.session.loginInfo._id }, (err, data) => {
+    if (err) {
+      return res.status(400).json({
+        error: 'NOT FIND SESSION ID',
+      });
+    }
+    console.log(data);
+    return res.json(data.id);
+  });
 });
 
 /*
