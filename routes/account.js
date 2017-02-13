@@ -106,7 +106,11 @@ router.post('/login', (req, res) => {
         code: 1,
       });
     }
-    const token = TokenManager.generateToken();
+
+    const token = TokenManager.generateToken(user.id);
+
+    console.log('token      : ', token);
+    console.log('user.id     : ', user.id);
 
     const session = req.session;
     session.loginInfo = {
