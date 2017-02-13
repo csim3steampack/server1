@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
+const TokenManager = require('../TokenManager');
 
 const router = express.Router();
 
@@ -105,16 +106,19 @@ router.post('/login', (req, res) => {
         code: 1,
       });
     }
+    const token = TokenManager.generateToken();
 
-    console.log(user.id);
-    let session = req.session;
+    const session = req.session;
     session.loginInfo = {
       _id: user._id,
       id: user.id,
     };
     console.log(req.session);
 
-    return res.json({ success: true });
+    return res.json({
+      success: true,
+      token,
+    });
   });
 });
 
@@ -136,7 +140,7 @@ router.get('/getinfo', (req, res) => {
         error: 'NOT FIND SESSION ID',
       });
     }
-    console.log(data);
+    console.log(data.id);
     return res.json(data.id);
   });
 });
