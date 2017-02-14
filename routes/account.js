@@ -115,7 +115,7 @@ router.post('/login', (req, res) => {
     //   id: user.id,
     // };
     // console.log(req.session);
-    console.log('222222222222           ', token);
+
     return res.json({
       success: true,
       token,
@@ -126,17 +126,20 @@ router.post('/login', (req, res) => {
 /*
   <토큰 확인> 세션(x)
   GET CURRENT USER INFO GET /api/account/getinfo
+
+  넘겨주는 값 : id
 */
 
-router.get('/getinfo', (req, res) => {
+router.post('/getinfo', (req, res) => {
 
-  // read the token from header or url
-  const token = req.headers['x-access-token'] || req.query.token;
+  const token = req.body.userToken;
+  // body : userToken
 
   const compareToken = TokenManager.getIDFromToken(token);
   console.log('token', token);
 
   console.log('확인하고싶다         ', compareToken);
+
   // token does not exist
   if (!token) {
     return res.status(403).json({
