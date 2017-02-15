@@ -15,7 +15,7 @@ router.use('/ground_display', ground_display);
 router.use('/home', home);
 router.use('/account', account);
 router.use('/game_register', game_register);
-router.use('profile', profile);
+router.use('/profile', profile);
 
 // router.use('/image', image);
 

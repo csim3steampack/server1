@@ -4,26 +4,39 @@ const TokenManager = require('../TokenManager');
 
 const router = express.Router();
 
-/*
-  <회원가입>
+/* -------------------------------------------------------
+  <ACCOUNT>
+
+  1. 회원가입
+  2. 로그인
+  3. 사용자 인증 확인 (토큰)
+  4. 로그아웃
+
+  CODY SAMPLE LIST :
+    id,
+    password,
+    mail,
+  -------------------------------------------------------
+*/
+
+/* -------------------------------------------------------
   ACCOUNT SIGNUP: POST /api/account/signup
-  CODY SAMPLE : { "id" : "test" , "password": "test", "mail" : "test"}
+
   ERROR CODES:
           1. BAD id
           2. BAD password
           3. BAD mail
           4. id EXISTS
+  -------------------------------------------------------
 */
 
 router.post('/signup', (req, res) => {
 
     // 1. BAD id
   const idRegex = /^[a-zA-Z][a-zA-Z0-9]{3,11}$/;
-  // 첫글자는 영어, 아이디는 영어소문자, 대문자 사용가능, 4자에서 12자 사이만 가능
+  // 첫글자는 영어, 아이디는 영어소문자, 대문자 사용가능, 공백(x), 4자에서 12자 사이만 가능
 
   if (!idRegex.test(req.body.id)) {
-  // const length = req.body.id.length;
-  // if (length < 2 || length > 10) {
     return res.status(400).json({
       error: 'BAD ID',
       code: 1,
@@ -73,12 +86,12 @@ router.post('/signup', (req, res) => {
   });
 });
 
-/*
+/* -------------------------------------------------------
   <로그인>
   ACCOUNT SIGNIN: POST /api/account/SIGNIN
-  BODY SAMPLE: { "id": "test", "password": "test", "mail" : "test" }
   ERROR CODES:
           1: LOGIN FAILED
+  -------------------------------------------------------
 */
 
 router.post('/login', (req, res) => {
@@ -123,11 +136,12 @@ router.post('/login', (req, res) => {
   });
 });
 
-/*
+/* ----------------------------------------------------
   <토큰 확인> 세션(x)
   GET CURRENT USER INFO GET /api/account/getinfo
 
   넘겨주는 값 : id
+-------------------------------------------------------
 */
 
 router.post('/getinfo', (req, res) => {
@@ -170,8 +184,9 @@ router.post('/getinfo', (req, res) => {
   // });
 // });
 
-/*
+/* -----------------------------------------------
   LOGOUT: POST /api/account/logout
+  -------------------------------------------------
 */
 
 router.post('/logout', (req, res) => {
