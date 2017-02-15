@@ -18,15 +18,14 @@ module.exports = {
       token,
       expiredAt,
     };
+    return token;
+    // tokenData[id].token === token 이유는 멀까?
     // key: value 둘다 값이 같을 때에는 key 하나만 쓴다.
     // console.log('원래 장소?      ', tokenData[id].token);
     // console.log(token);
-    return token;
-    // tokenData[id].token === token 이유는 멀까?
   },
 
   getIDFromToken(token) {
-
     // 상훈 코드
     // let output;
     // Object.keys(tokenData).forEach((key) => {
@@ -42,7 +41,7 @@ module.exports = {
     // 남세 코드
     const findId = Object.keys(tokenData).find((key) => { // object를 array처럼 사용하기 위해서 Object.keys 사용
       const data = tokenData[key]; // data는 tokenData의 id의 value값에 있는 object안의 key값을 의미한다.
-      return data.token === token && data.expiredAt >= new Date().getTime(); // data.token은 token의 value값을 의마한다.
+    return data.token === token && data.expiredAt >= new Date().getTime(); // data.token은 token의 value값을 의마한다.
     });
 
     return findId;
@@ -79,7 +78,7 @@ module.exports = {
 
   // TODO expiredAt 늘려주는 함수 만들기.
 
-  extendExpiredAt(token, time) {
+  // extendExpiredAt(token, time) {
     // let temp;
     // const target = module.exports.getIDFromToken(token);
     // console.log(target);
@@ -92,10 +91,11 @@ module.exports = {
     //   }
     // }
     // console.log(temp);
-  },
+  // },
 };
 
-// const token = module.exports.generateToken(3);
-// console.log('generate       :', token);
-// console.log('getID           :', module.exports.getIDFromToken(token));
+const token = module.exports.generateToken(3);
+
+console.log('generate       :', token);
+console.log('getID           :', module.exports.getIDFromToken(token));
 // console.log('extend           :', module.exports.extendExpiredAt(expiredAt, 60));

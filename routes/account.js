@@ -132,13 +132,13 @@ router.post('/login', (req, res) => {
 
 router.post('/getinfo', (req, res) => {
 
-  const token = req.body.userToken;
+  const token = req.body.userToken.token;
   // body : userToken
 
-  const compareToken = TokenManager.getIDFromToken(token);
+  const getId = TokenManager.getIDFromToken(token);
   console.log('token', token);
 
-  console.log('확인하고싶다         ', compareToken);
+  console.log('compareToken         ', getId);
 
   // token does not exist
   if (!token) {
@@ -150,7 +150,7 @@ router.post('/getinfo', (req, res) => {
 
   return res.json({
     success: true,
-    info: token,
+    info: getId,
   });
 });
   // if (typeof req.session.loginInfo === 'undefined') {
