@@ -16,7 +16,7 @@ const User = new Schema({
   leader: String,
   // img: { data: Buffer, contentTypes: String },
   position: String,
-  height: String,
+  height: Number,
   foot: String,
   created: {
     type: Date,
@@ -25,7 +25,7 @@ const User = new Schema({
 // -------------Game Register-----------------
   place: String,
   playground: String,
-  palydate: Date,
+  playdate: Date,
   // team_img: { data: Buffer, contentTypes: String },
 });
 
