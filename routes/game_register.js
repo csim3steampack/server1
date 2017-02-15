@@ -82,10 +82,6 @@ router.post('/add', (req, res) => {
   -------------------------------------------------------
 */
 
-router.put('/modify', (req, res) => {
-
-})
-
 /* -------------------------------------------------------
   GAME RESISTER DELETE : DELETE /api/game_register/delete
   ERROR CODES:
@@ -95,8 +91,18 @@ router.put('/modify', (req, res) => {
   -------------------------------------------------------
 */
 
-router.delete('/delete', (req, res) => {
+router.post('/delete', (req, res) => {
 
-})
+  // const token = req.body.userToken.token;
+  // const getId = TokenManager.getIDFromTokenData(token);
+
+  User.findOne({ id: 'aaaa' }, (err, data) => {
+    if (err) throw err;
+    User.remove(data, (err) => {
+      if (err) throw err;
+      return res.json({ success: true });
+    });
+  });
+});
 
 module.exports = router;

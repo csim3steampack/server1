@@ -71,7 +71,7 @@ router.post('/add', (req, res) => {
 
   // 3. BAD leader
   const leaderCheck = ['0', '1']
-  if (req.body.leader !== leaderCheck) {
+  if (leaderCheck.indexOf(req.body.leader) === -1) {
     return res.status(400).json({
       error: 'BAD LEADER',
       code: 3,
@@ -102,31 +102,21 @@ router.post('/add', (req, res) => {
     });
   }
 
-  // const token = req.body.userToken.token;
-  // const getId = TokenManager.getIDFromTokenData(token);
+  const token = req.body.userToken.token;
+  const getId = TokenManager.getIDFromTokenData(token);
 
-  User.findOne({ id: 'danbi' }, (err, exist) => {
+  const updateData = {
+    username: req.body.username,
+    team: req.body.team,
+    leader: req.body.leader,
+    position: req.body.position,
+    height: req.body.height,
+    foot: req.body.foot,
+  };
 
+  User.findOne({ id: getId }, (err, data) => {
     if (err) throw err;
-
-    // 7. ALREADY (profile) EXSIST
-    if (exist) {
-      return res.status(409).json({
-        error: 'PROFILE EXIST',
-        code: 7,
-      });
-    }
-
-    const user = new User({
-      username: req.body.username,
-      team: req.body.team,
-      leader: req.body.leader,
-      position: req.body.position,
-      height: req.body.height,
-      foot: req.body.foot,
-    });
-
-    user.save((err) => {
+    User.update(data, { $set: updateData }, (err, data) => {
       if (err) throw err;
       return res.json({ success: true });
     });
