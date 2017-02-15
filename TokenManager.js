@@ -10,7 +10,7 @@ module.exports = {
     return tokenData;
   },
 
-  generateToken(id) {
+  generateTokenData(id) {
     const token = uuid();
     const expiredAt = new Date().getTime() + (60 * 60 * 1000);
     tokenData[id] = {
@@ -18,7 +18,7 @@ module.exports = {
       token,
       expiredAt,
     };
-    return token;
+    return tokenData;
     // tokenData[id].token === token 이유는 멀까?
     // key: value 둘다 값이 같을 때에는 key 하나만 쓴다.
     // console.log('원래 장소?      ', tokenData[id].token);
@@ -94,8 +94,8 @@ module.exports = {
   // },
 };
 
-const token = module.exports.generateToken(3);
-
-console.log('generate       :', token);
-console.log('getID           :', module.exports.getIDFromToken(token));
+// const token = module.exports.generateToken(3);
+//
+// console.log('generate       :', token);
+// console.log('getID           :', module.exports.getIDFromToken(token));
 // console.log('extend           :', module.exports.extendExpiredAt(expiredAt, 60));
