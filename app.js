@@ -10,7 +10,7 @@ const path = require('path');
 
 // const config = require('./config/config');
 const multer = require('multer');
-const morgan = require('morgan');
+// const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
 
@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // --------------------print the request log on console---------------- //
-app.use(morgan());
+// app.use(morgan());
 
 // ---------------------mongodb connection----------------------------- //
 

@@ -85,7 +85,7 @@ router.post('/login', (req, res) => {
   // LOGIN FAILED
   if (typeof req.body.password !== 'string') {
     return res.status(401).json({
-      error: 'LOGIN FAILED',
+      error: 'LOGIN FAILED_password not string',
       code: 1,
     });
   }
@@ -95,20 +95,20 @@ router.post('/login', (req, res) => {
 
     if (!user) {
       return res.status(401).json({
-        error: 'LOGIN FAILED',
+        error: 'LOGIN FAILED_not user',
         code: 1,
       });
     }
 
     if (!user.validateHash(req.body.password)) {
       return res.status(401).json({
-        error: 'LOGIN FAILED',
+        error: 'LOGIN FAILED_not password',
         code: 1,
       });
     }
 
-    const token = TokenManager.generateToken(user.id);
-
+    const tokenData = TokenManager.generateTokenData(user.id);
+    console.log(tokenData);
     // const session = req.session;
     // session.loginInfo = {
     //   _id: user._id,
@@ -118,7 +118,7 @@ router.post('/login', (req, res) => {
 
     return res.json({
       success: true,
-      token,
+      tokenData,
     });
   });
 });
