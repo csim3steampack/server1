@@ -12,7 +12,7 @@ module.exports = {
 
   generateTokenData(id) {
     const token = uuid();
-    const expiredAt = new Date().getTime() + (60 * 60 * 1000);
+    const expiredAt = new Date().getTime() + (10 * 60 * 60 * 1000);
     tokenData[id] = {
       id,
       token,
