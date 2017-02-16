@@ -6,7 +6,7 @@ const home = require('./home');
 const account = require('./account');
 const game_register = require('./game_register');
 const profile = require('./profile');
-const image = require('./image');
+// const image = require('./image');
 
 const router = express.Router();
 
@@ -16,6 +16,6 @@ router.use('/home', home);
 router.use('/account', account);
 router.use('/game_register', game_register);
 router.use('/profile', profile);
-router.use('/image', image);
+// router.use('/image', image);
 
 module.exports = router;

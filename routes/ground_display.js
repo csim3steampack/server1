@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
+const TokenManager = require('../TokenManager');
 
 const router = express.Router();
 
@@ -21,21 +22,28 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
 
+  const awayTeam = req.body.team;
   const token = req.body.userToken.token;
   const getId = TokenManager.getIDFromToken(token);
 
-  const getTeam = User.findOne({ id: getId }, { team: 1 });
-
-  User.find({
-    $or: [
-      { team: { $in: getTeam } },
-      { team: { $in: req.body.selectedTeam } },
-    ],
-  })
-  .then((data, err) => {
+  User.findOne({ name: getId }, { team: 1, _id: 0 }, (err, data) => {
     if (err) throw err;
-    console.log('data', data);
-    res.json(data);
+    const homeTeam = data.team;
+
+    User.find({ team: homeTeam }, (err, data) => {
+      if (err) throw err;
+      const homeUsers = data;
+
+      User.find({ team: awayTeam }, (err, data) => {
+        if (err) throw err;
+        const awayUsers = data;
+
+        res.json({
+          homeUsers,
+          awayUsers,
+        });
+      });
+    });
   });
 });
 
