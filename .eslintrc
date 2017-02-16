@@ -3,6 +3,6 @@
   "rules": {
   "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
 },
-  "prefer-stateless-function": [<enabled>, { "ignorePureComponents": <ignorePureComponents> }]
+  # "prefer-stateless-function": [<enabled>, { "ignorePureComponents": <ignorePureComponents> }]
 
 }

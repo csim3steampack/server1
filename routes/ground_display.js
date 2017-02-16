@@ -19,17 +19,21 @@ const router = express.Router();
 //   });
 // });
 
-router.get('/', (req, res) => {
-  // console.log(req.query.teamA, req.query.teamB);
-  console.log(req.query);
+router.post('/', (req, res) => {
+
+  const token = req.body.userToken.token;
+  const getId = TokenManager.getIDFromToken(token);
+
+  const getTeam = User.findOne({ id: getId }, { team: 1 });
+
   User.find({
     $or: [
-      { team: { $in: req.query.teamA } },
-      { team: { $in: req.query.teamB } },
+      { team: { $in: getTeam } },
+      { team: { $in: req.body.selectedTeam } },
     ],
   })
   .then((data, err) => {
-    if(err) console.log('송현규', err);
+    if (err) throw err;
     console.log('data', data);
     res.json(data);
   });

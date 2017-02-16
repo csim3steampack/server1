@@ -56,7 +56,7 @@ router.post('/add', (req, res) => {
 
   // FIND VALID ID FROM TOKEN
   const token = req.body.userToken.token;
-  const getId = TokenManager.getIDFromTokenData(token);
+  const getId = TokenManager.getIDFromToken(token);
 
   const updateData = {
     place: req.body.place,
@@ -64,7 +64,7 @@ router.post('/add', (req, res) => {
     playdate: req.body.playdate,
   };
 
-  User.findOne({ id: 'getId' }, (err, data) => {
+  User.findOne({ id: getId }, (err, data) => {
     if (err) throw err;
     User.update(data, { $set: updateData }, (err, data) => {
       if (err) throw err;
@@ -93,10 +93,10 @@ router.post('/add', (req, res) => {
 
 router.post('/delete', (req, res) => {
 
-  // const token = req.body.userToken.token;
-  // const getId = TokenManager.getIDFromTokenData(token);
+  const token = req.body.userToken.token;
+  const getId = TokenManager.getIDFromToken(token);
 
-  User.findOne({ id: 'aaaa' }, (err, data) => {
+  User.findOne({ id: getId }, (err, data) => {
     if (err) throw err;
     User.remove(data, (err) => {
       if (err) throw err;

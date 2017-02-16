@@ -4,15 +4,12 @@ const TokenManager = require('../TokenManager');
 
 
 const profilePosition = [
-  'ST', 'LS', 'RS', 'LF', 'CF', 'RF',
-  'LAM', 'CAM', 'RAM', 'LM', 'CM', 'RM', 'LDM', 'CDM', 'RDM',
-  'LB', 'CB', 'RB', 'SW',
+  'FW', 'MF', 'DF', 'GK',
 ];
 
 const profileFoot = [
-  'a', '오른발', '왼발', '양발',
+  'right', 'left', 'both',
 ];
-
 
 const router = express.Router();
 
@@ -32,6 +29,7 @@ const router = express.Router();
   ------------------------------------------------
 */
 
+
 /*------------------------------------------------
   PROFILE ADD : POST /api/profile/add
   ERROR CODES:
@@ -46,7 +44,6 @@ const router = express.Router();
 */
 
 router.post('/add', (req, res) => {
-  console.log('h1');
   // 1. BAD username
   const usernameRegex = /^[0-9가-힣a-zA-Z\s]{0,19}$/;
   // 영어(소문자,대문자) : 20자, 한글 : 10자, 공백사용, 숫자사용
@@ -87,7 +84,7 @@ router.post('/add', (req, res) => {
   }
 
   // 5. BAD height
-  if (typeof req.body.height !== 'number') {
+  if (typeof req.body.height !== 'string') {
     return res.status(400).json({
       error: 'BAD HEIGHT',
       code: 5,
@@ -103,7 +100,7 @@ router.post('/add', (req, res) => {
   }
 
   const token = req.body.userToken.token;
-  const getId = TokenManager.getIDFromTokenData(token);
+  const getId = TokenManager.getIDFromToken(token);
 
   const updateData = {
     username: req.body.username,
@@ -118,7 +115,10 @@ router.post('/add', (req, res) => {
     if (err) throw err;
     User.update(data, { $set: updateData }, (err, data) => {
       if (err) throw err;
-      return res.json({ success: true });
+      return res.json({
+        success: true,
+        data,
+      });
     });
   });
 });
