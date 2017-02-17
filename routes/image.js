@@ -1,85 +1,40 @@
-// const express = require('express');
-// const multer = require('multer');
-//
-// const router = express.Router();
-//
-// /*
-//   multer : 파일 업로드할 때 사용하는 미들웨어
-// --------------------------------------------
-//   multer( {dest: '주소'}) : 기본형
-//   multer({ storage: storage }) : 섬세한 표현
-//   .diskStorage{
-//     destination : 저장할 곳
-//     filename : 파일이 저장될 때의 이름
-//   }
-//
-//   .single(fieldname : req.file에 저장된다)
-//
-// */
-//
-// const storage = multer.diskStorage({
-//
-//
-//   destination(req, file, cb) {
-//     const basePath = 'https://s3.ap-northeast-2.amazonaws.com/steampack/';
-//     // const s3Path = basePath + filePath;
-//     cb(null, basePath);
-//   },
-//   filename(req, file, cb) {
-//     // file 은 req.file을 의미한다.
-//     // 업로드하는 파일의 이름과 형식을 지정해주는 uploadedFile 객체 추가
-//     // file.uploadedFile = {
-//     //   name: file.fieldname,
-//     //   ext: file.mimetype.split('/')[1],
-//     //     // mimetype: 'image/jpeg' So, ext는 뒤 확장자를 가지고 있어야 함
-//     // };
-//     cb(null, file.originalname);
-//   },
-// });
-//
-// // const upload = multer({ storage: storage }); // 더 섬세한 설정을 하기위해서 사용하는 표현 중의 하나
-// const upload = multer({ storage });
-//
-//
-// router.post('/', upload.single('file'), (req, res) => {
-//   res.send(req.file.originalname);
-// });
-//
-//
-//
-// //
-// // const upload = (req, res) => {
-// //   // const deferred = Q.defer();
-// //   const storage = multer.diskStorage({
-// //     // 서버에 저장할 폴더
-// //     destinateion: (req, file, callback) => {
-// //       callback(null, imagePath);
-// //     },
-// //     // 서버에 저장할 파일 명
-// //     filename: (req, file, callback) => {
-// //       file.uploadedFile = {
-// //         name: req.params.filename,
-// //         ext: file.mimetype.split('/')[1],
-// //       };
-// //       callback(null, file.uploadedFile.name + '.' + file.uploadedFile.ext);
-// //     },
-// //   });
-// //
-// //   const upload = multer({ storage: storage }).single('file');
-// //   upload(req, res, (err) => {
-// //     if (err) deferred.reject();
-// //     else deferred.resolve(req.file.uploadedFile);
-// //   });
-// //
-// //   return deferred.promise;
-// // };
-// //
-// // router.post('/:filename', (req, res, next) => {
-// //   console.log(req.body);
-// //   upload(req, res).then( (file) => {
-// //     res.json(file);
-// //   }, function (err) {
-// //     res.send(500, err);
-// //   });
-// // });
-// module.exports = router;
+const express = require('express');
+const fs = require('fs');
+const AWS = require('aws-sdk');
+
+AWS.config.region = 'ap-northeast-2';
+const s3 = new AWS.S3();
+
+const TokenManager = require('../TokenManager');
+
+const router = express.Router();
+
+/*
+  TODO
+  1. 팀 사진과 유저 사진을 다르게 저장 해야함
+  2. 팀 사진 라우터 / 유저 사진 라우터
+  3. Bucket은 임의적으로 두개로 나눌수는 있지만, Key는 어떻게 동적으로 작동하게 할 수 있을까
+  4. 이미지 생성, 수정, 삭제 구현해야 함
+  5. 클라이언트 측에 전달할 때는, 리스트url로 주자
+*/
+
+const teamBucket = 'steampackTeam';
+const teamKey = '';
+
+const userBucket = 'steampackUser';
+const userKey = '';
+
+/*
+  1. 유저 사진 업로드 : /api/image/user/upload
+  2. 유저 사진 수정 : /api/image/user/modify
+  3. 유저 사진 삭제 : /api/image/user/delete
+*/
+
+router.post('/user/upload', (req, res) => {
+  console.log(req.file);
+  // const token = req.body.userToken.token;
+  // const getId = TokenManager.getIDFromToken(token);
+
+});
+
+module.exports = router;

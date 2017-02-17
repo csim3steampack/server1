@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^2.1.4",
-    "aws-sdk": "^2.14.0",
+    "aws-sdk": "^2.15.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.16.0",
     "connect-multiparty": "^2.0.0",

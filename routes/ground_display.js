@@ -22,7 +22,7 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
 
-  const awayTeam = req.body.team;
+  const awayTeam = req.body.selcetTeam;
   const token = req.body.userToken.token;
   const getId = TokenManager.getIDFromToken(token);
 
@@ -30,11 +30,11 @@ router.post('/', (req, res) => {
     if (err) throw err;
     const homeTeam = data.team;
 
-    User.find({ team: homeTeam }, (err, data) => {
+    User.find({ team: homeTeam }, { password: 0 }, (err, data) => {
       if (err) throw err;
       const homeUsers = data;
 
-      User.find({ team: awayTeam }, (err, data) => {
+      User.find({ team: awayTeam }, { password: 0 }, (err, data) => {
         if (err) throw err;
         const awayUsers = data;
 
