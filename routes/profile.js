@@ -16,8 +16,8 @@ const router = express.Router();
 /* ------------------------------------------------
   <PROFILE>
 
-  1. 프로필 생성
-  2. 프로필 수정
+  1. 프로필 생성, 수정 : /api/profile/
+  2. 프로필 확인 : /api/profile/confirm
 
   CODE SAMPLE LIST :
     username,
@@ -31,7 +31,7 @@ const router = express.Router();
 
 
 /*------------------------------------------------
-  PROFILE ADD : POST /api/profile/add
+  PROFILE ADD : POST /api/profile/
   ERROR CODES:
           1. BAD username
           2. BAD team
@@ -43,7 +43,7 @@ const router = express.Router();
   ------------------------------------------------
 */
 
-router.post('/add', (req, res) => {
+router.post('/', (req, res) => {
   // 1. BAD username
   const usernameRegex = /^[0-9가-힣a-zA-Z\s]{0,19}$/;
   // 영어(소문자,대문자) : 20자, 한글 : 10자, 공백사용, 숫자사용
@@ -113,14 +113,40 @@ router.post('/add', (req, res) => {
 
   User.findOne({ id: getId }, (err, data) => {
     if (err) throw err;
-    User.update(data, { $set: updateData }, (err, data) => {
+
+    User.update(data, { $set: updateData }, (err) => {
       if (err) throw err;
-      return res.json({
-        success: true,
-        data,
+
+      User.findOne({ id: getId }, (err, data) => {
+        if (err) throw err;
+        return res.json({
+          success: true,
+          data,
+        });
       });
     });
   });
 });
+
+/*------------------------------------------------
+  PROFILE CONFIRM : POST /api/profile/confirm
+  ERROR CODES:
+  ------------------------------------------------
+*/
+
+router.post('/confirm', (req, res) => {
+
+  const token = req.body.userToken.token;
+  const getId = TokenManager.getIDFromToken(token);
+
+  User.findOne({ id: getId }, (err, data) => {
+    if (err) throw err;
+    return res.json({
+      success: true,
+      data,
+    });
+  });
+});
+
 
 module.exports = router;

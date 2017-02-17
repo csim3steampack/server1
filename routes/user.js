@@ -5,7 +5,6 @@ const router = express.Router();
 
 // GET ALL USER
 router.get('/', (req, res) => {
-  console.log(req)
   User.find((err, user) => {
     if (err) return res.status(500).send({ error: 'database failure' });
     return res.json(user);

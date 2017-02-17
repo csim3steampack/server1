@@ -37,6 +37,18 @@
     4. IAM 그룹 생성을 통해 권한을 관리
     5. 암호 생성 조건을 꼭 설정
 
+## 2/17 현진 강의
+#### mysql 트랜젝션
+* commit
+* rollback
+#### promise hello
+* pending / resolve / reject
+* 콜백 함수 중에
+if(err) reject(err)를 하면 에러가 리턴되지 않고 다음 .then으로 이동해 버린다.
+그러므로,
+if(err) return reject(err)
+에러처리에는 return을 꼭 해줘야함
+* 콜백 함수를 사용하면 throw err를 자주 사용하는데, 이때에, 콘솔을 찍을 때, console.log('err', err.stack)을 사용하면, 어디에서 err가 나는지를 확인할 수 있다.
 
 
 

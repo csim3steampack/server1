@@ -13,8 +13,8 @@ const seoul_borough = [
 ];
 
 /* ------------------------------------------------
-  1. 게임 생성 : /api/game_register/add
-  2. 게임 수정 : /api/game_register/modify
+  1. 게임 생성, 수정 : /api/game_register/
+  2. 게임 확인 : /api/game_register/confirm
   3. 게임 삭제 : /api/game_register/delete
 
   CODE SAMPLE LIST :
@@ -25,7 +25,7 @@ const seoul_borough = [
 */
 
 /* ------------------------------------------------
-  GAME RESISTER ADD : POST /api/game_register/add
+  GAME RESISTER ADD : POST /api/game_register/
   ERROR CODES:
           1. BAD place
           2. BAD playground
@@ -33,7 +33,7 @@ const seoul_borough = [
   ------------------------------------------------
 */
 
-router.post('/add', (req, res) => {
+router.post('/', (req, res) => {
 
   // 1. BAD place
   if (seoul_borough.indexOf(req.body.place) === -1) {
@@ -66,21 +66,40 @@ router.post('/add', (req, res) => {
 
   User.findOne({ id: getId }, (err, data) => {
     if (err) throw err;
-    User.update(data, { $set: updateData }, (err, data) => {
+
+    User.update(data, { $set: updateData }, (err) => {
       if (err) throw err;
-      return res.json({ success: true });
+
+      User.findOne({ id: getId }, (err, data) => {
+        if (err) throw err;
+        return res.json({
+          success: true,
+          data,
+        });
+      });
     });
   });
 });
 
 /* -------------------------------------------------------
-  GAME RESISTER MODIFY : PUT /api/game_register/modify
+  GAME RESISTER CONFIRM : PUT /api/game_register/confirm
   ERROR CODES:
-          1. BAD place
-          2. BAD playground
-          3. BAD playdate
   -------------------------------------------------------
 */
+
+router.use('/confirm', (req, res) => {
+
+  const token = req.body.userToken.token;
+  const getId = TokenManager.getIDFromToken(token);
+
+  User.findOne({ id: getId }, (err, data) => {
+    if (err) throw err;
+    return res.json({
+      success: true,
+      data,
+    });
+  });
+});
 
 /* -------------------------------------------------------
   GAME RESISTER DELETE : DELETE /api/game_register/delete
