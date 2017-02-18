@@ -9,7 +9,9 @@ const cors = require('cors');
 const path = require('path');
 
 // const config = require('./config/config');
+// const aws = require('aws-sdk');
 // const multer = require('multer');
+// const multerS3 = require('multer-s3');
 // const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
@@ -26,7 +28,8 @@ app.use(cors());
 // ------------- 서버 변수 설정 및 static으로 public 폴더 설정  ----------- //
 
 // app.set('port', config.server_port);
-app.use('../client/client-side/public', express.static(path.join(__dirname, 'public')));
+// app.use('../client/client-side/public', express.static(path.join(__dirname, 'public')));
+app.use('./public', express.static(path.join(__dirname, 'public')))
 
 // bodyParser : request 객체에 body 속성을 부여함!!
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -80,3 +83,34 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log('Express is listening on port', port);
 });
+
+// const io = socketio.listen(server);
+// console.log('socket.io 요청을 받아들일 준비가 되었습니다');
+//
+// // 클라이언트가 연결했을 때의 이벤트 처리
+// io.sockets.on('connection', (socket) => {
+//   console.log('connection info : ', socket.request.connection._pername);
+//
+//   // 소켓 객체에 클라이언트 Host, Port 정보 속성으로 추가
+//   socket.remoteAddress = socket.request.connection._pername.address;
+//   socket.remotePort = socket.request.connection._pername.port;
+// });
+
+
+//
+// var app = require('express')();
+// var server = require('http').Server(app);
+// var io = require('socket.io')(server);
+//
+// server.listen(80);
+//
+// app.get('/', function (req, res) {
+//   res.sendfile(__dirname + '/index.html');
+// });
+//
+// io.on('connection', function (socket) {
+//   socket.emit('news', { hello: 'world' });
+//   socket.on('my other event', function (data) {
+//     console.log(data);
+//   });
+// });

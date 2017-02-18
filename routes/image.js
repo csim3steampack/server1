@@ -1,16 +1,16 @@
 const express = require('express');
 const formidable = require('formidable');
-// const multer = require('multer');
-// const upload = multer();
+const multer = require('multer');
 const fs = require('fs');
 const AWS = require('aws-sdk');
-
-AWS.config.region = 'ap-northeast-2';
-const s3 = new AWS.S3();
-
 const User = require('../models/user')
 const TokenManager = require('../TokenManager');
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+AWS.config.region = 'ap-northeast-2';
+const s3 = new AWS.S3();
 const router = express.Router();
 
 /*
@@ -22,16 +22,15 @@ const router = express.Router();
   5. 클라이언트 측에 전달할 때는, 리스트url로 주자
 */
 
-const Bucket = 'steampack';
+// const Bucket = 'steampack';
 
 // const teamKey = `team/${team}.jpeg`;
-// const userKey = `user/${id}.jpeg`;
+
 
 
 /*
-  1. 유저 사진 업로드 : /api/image/user/upload
+  1. 유저 사진 업로드, 수정 : /api/image/user/upload
   2. 유저 사진 다운로드 : /api/image/user/image
-  2. 유저 사진 수정 : /api/image/user/modify
   3. 유저 사진 삭제 : /api/image/user/delete
 */
 
@@ -41,41 +40,78 @@ const Bucket = 'steampack';
   3. 몽고에는 들어가지 말자
   4. s3에 저장할 때는 :::  /user/id 로 저장
 */
+//
+/*
+1. 파일 받아서 - multer를 이용해서 받는다. 그러면 req.file에 파일이 저장된다.
+2. 파일 S3에 올린다 - req.file을 s3.upload에 Body에 올린다.
+*/
 
-router.post('/user/upload', (req, res) => {
+router.post('/user/upload', upload.single('file'), (req, res) => {
 
   const token = req.body.userToken.token;
-  const getId = TokenManager.getIDFromToken(token);
+  const id = TokenManager.getIDFromToken(token);
 
-  const userKey = `user/${getId}`;
-  const form = new formidable.IncomingForm();
-  form.parse(req, (err, fields, files) => {
-    const params = {
-      Bucket,
-      Key: userKey,
-      ACL: 'public-read',
-      Body: fs.createReadStream('./uploads/file.jpeg'),
+  const Bucket = 'steampack';
+  const userKey = `user/${id}.png`;
+
+  const params = {
+    Bucket,
+    Key: userKey,
+    ACL: 'public-read',
+    Body: req.file.buffer,
+  };
+
+  s3.upload(params, (err, data) => {
+    if (err) throw err;
+
+    console.log('Successfully uploaded data to myBucket', data);
+    const userImgUrl = {
+      userImgUrl: data.Location,
     };
 
-    s3.upload(params, (err, data) => {
-      if (err) console.log(err);
-      console.log('Successfully uploaded data to myBucket');
-      const userImgUrl = {
-        userImgUrl: data.Location,
-      };
+    User.findOne({ id }, (err, data) => {
+      if (err) throw err;
+      console.log('getId된 user의 데이터', data)
 
-      User.findOne({ id: getId }, (err, data) => {
+      User.update(data, { $set: userImgUrl }, (err) => {
         if (err) throw err;
-        console.log('getId된 user의 데이터', data)
-
-        User.update(data, { $set: userImgUrl }, (err) => {
-          if (err) throw err;
-          return res.json('success: true');
-        });
+        return res.json('success: true');
       });
     });
   });
 });
+
+
+// app.use(multer({
+//   dest: './public/uploads/',
+//   limits: { filesize: 100000 },
+//   rename: function (filedname, filename) {
+//     return filename.replace(/\W+/g, '-').toLowerCase();
+//   },
+//   onFileUploadData: function (file, data, req, res) {
+//     const params = {
+//       Bucket,
+//       Key: userKey,
+//       ACL: 'public-read',
+//       Body: data,
+//     };
+//
+//     s3.putObject(params, (perr, pres) => {
+//       if (perr) console.log('Error uploading data: ', perr);
+//       console.log('Successfully uploaded data to myBucket');
+//     });
+//   },
+// }));
+//
+// router.post('/user/upload', (req, res) => {
+//   if (req.files.image !== undefined) {
+//     res.json('success: trew');
+//   } else {
+//     res.send('error, no file chosen');
+//   }
+// });
+
+
 
 router.get('/user/download', (req, res) => {
   const form = new formidable.IncomingForm();
