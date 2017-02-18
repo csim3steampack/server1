@@ -1,5 +1,30 @@
 ## Markdown start : ctrl + shift + m
 
+## AWS S3
+#### 참고자료[http://nsec.tistory.com/166]
+* multipart/form-data를 사용하여 파일등을 넘길때 req.files와 req.body가 보이지 않을 때
+해결책: formidable 미들웨어로 해결한다
+```html
+// HTML
+<form method='post' enctype='multipart/form-data'>
+```
+```js
+// ROUTE
+const form = new formidable.IncomingForm();
+form.parse(req, (err, fileds, files) => {
+  console.log(files);
+  console.log(fields);
+})
+```
+```js
+// SERVER
+const form = nuw formidable.IncomingForm();
+form.uploadDir = __dirname + '/public/multipart';
+form.keepExtensions = true;
+
+```
+
+
 ## 오류 코드 정리
 
 * 200 : 완벽히 성공
@@ -49,12 +74,6 @@ if(err) reject(err)를 하면 에러가 리턴되지 않고 다음 .then으로 �
 if(err) return reject(err)
 에러처리에는 return을 꼭 해줘야함
 * 콜백 함수를 사용하면 throw err를 자주 사용하는데, 이때에, 콘솔을 찍을 때, console.log('err', err.stack)을 사용하면, 어디에서 err가 나는지를 확인할 수 있다.
-
-
-
-
-
-
 
 ## Process란?
 

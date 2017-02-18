@@ -9,7 +9,7 @@ const cors = require('cors');
 const path = require('path');
 
 // const config = require('./config/config');
-const multer = require('multer');
+// const multer = require('multer');
 // const morgan = require('morgan');
 
 const bodyParser = require('body-parser');
@@ -28,6 +28,7 @@ app.use(cors());
 // app.set('port', config.server_port);
 app.use('../client/client-side/public', express.static(path.join(__dirname, 'public')));
 
+// bodyParser : request 객체에 body 속성을 부여함!!
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
