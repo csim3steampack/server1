@@ -1,15 +1,18 @@
 const express = require('express');
-const formidable = require('formidable');
+// const formidable = require('formidable');
 const multer = require('multer');
-const fs = require('fs');
+// const fs = require('fs');
 const AWS = require('aws-sdk');
-const User = require('../models/user')
+
+AWS.config.region = 'ap-northeast-2';
+// AWS.config.loadFromPath = 'ap-northeast-2';
+
+const User = require('../models/user');
 const TokenManager = require('../TokenManager');
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
-AWS.config.region = 'ap-northeast-2';
 const s3 = new AWS.S3();
 const router = express.Router();
 
@@ -25,8 +28,6 @@ const router = express.Router();
 // const Bucket = 'steampack';
 
 // const teamKey = `team/${team}.jpeg`;
-
-
 
 /*
   1. 유저 사진 업로드, 수정 : /api/image/user/upload
@@ -48,11 +49,13 @@ const router = express.Router();
 
 router.post('/user/upload', upload.single('file'), (req, res) => {
 
-  const token = req.body.userToken.token;
-  const id = TokenManager.getIDFromToken(token);
+  // '' 이거를 풀고 싶을 때는 JSON.parse() 를 사용!!
+  const parseToken = JSON.parse(req.headers.usertoken);
+  const token = parseToken.token;
+  const userId = TokenManager.getIDFromToken(token);
 
   const Bucket = 'steampack';
-  const userKey = `user/${id}.png`;
+  const userKey = `user/${userId}.png`;
 
   const params = {
     Bucket,
@@ -64,14 +67,12 @@ router.post('/user/upload', upload.single('file'), (req, res) => {
   s3.upload(params, (err, data) => {
     if (err) throw err;
 
-    console.log('Successfully uploaded data to myBucket', data);
     const userImgUrl = {
       userImgUrl: data.Location,
     };
 
-    User.findOne({ id }, (err, data) => {
+    User.findOne({ id: userId }, (err, data) => {
       if (err) throw err;
-      console.log('getId된 user의 데이터', data)
 
       User.update(data, { $set: userImgUrl }, (err) => {
         if (err) throw err;
@@ -81,7 +82,52 @@ router.post('/user/upload', upload.single('file'), (req, res) => {
   });
 });
 
+router.post('/team/upload', upload.single('file'), (req, res) => {
 
+  const parseToken = JSON.parse(req.headers.usertoken);
+  const token = parseToken.token;
+  const userId = TokenManager.getIDFromToken(token);
+
+  User.findOne({ id: userId }, { team: 1, _id: 0 }, (err, data) => {
+    if (err) throw err;
+
+    const teamname = data.team;
+
+    const Bucket = 'steampack';
+    const teamKey = `team/${teamname}.png`;
+    // const teamKey = 'danbi.png';
+
+    const params = {
+      Bucket,
+      Key: teamKey,
+      ACL: 'public-read',
+      Body: req.file.buffer,
+    };
+
+    s3.upload(params, (err, data) => {
+      if (err) throw err;
+
+      console.log('Successfully uploaded data to myBucket', data);
+      const teamImgUrl = {
+        teamImgUrl: data.Location,
+      };
+
+      User.findOne({ id: userId }, (err, data) => {
+        if (err) throw err;
+        console.log('getId된 user의 데이터', data);
+
+        User.update(data, { $set: teamImgUrl }, (err) => {
+          if (err) throw err;
+          return res.json({
+            success: true,
+          });
+        });
+      });
+    });
+  });
+});
+
+//
 // app.use(multer({
 //   dest: './public/uploads/',
 //   limits: { filesize: 100000 },
@@ -110,35 +156,35 @@ router.post('/user/upload', upload.single('file'), (req, res) => {
 //     res.send('error, no file chosen');
 //   }
 // });
+//
 
 
-
-router.get('/user/download', (req, res) => {
-  const form = new formidable.IncomingForm();
-  form.parse(req, (serr, fields, files) => {
-    const params = { Bucket };
-
-    s3.listObjects(params, (err, data) => {
-      if (err) console.log(err);
-      console.log('params   :', params);
-      console.log('data     :', data);
-      const bucketContents = data.Contents;
-      const userUrls = [];
-
-      for (let i = 0; i < bucketContents.length; i += 1) {
-        const urlParams = {
-          Bucket,
-          Key: bucketContents[i].Key,
-        };
-        s3.getSignedUrl('getObject', urlParams, (err, url) => {
-          if (err) console.log(err);
-          userUrls.push(url);
-        });
-      }
-
-      return res.send(userUrls);
-    });
-  });
-});
+// router.get('/user/download', (req, res) => {
+//   const form = new formidable.IncomingForm();
+//   form.parse(req, (serr, fields, files) => {
+//     const params = { Bucket };
+//
+//     s3.listObjects(params, (err, data) => {
+//       if (err) console.log(err);
+//       console.log('params   :', params);
+//       console.log('data     :', data);
+//       const bucketContents = data.Contents;
+//       const userUrls = [];
+//
+//       for (let i = 0; i < bucketContents.length; i += 1) {
+//         const urlParams = {
+//           Bucket,
+//           Key: bucketContents[i].Key,
+//         };
+//         s3.getSignedUrl('getObject', urlParams, (err, url) => {
+//           if (err) console.log(err);
+//           userUrls.push(url);
+//         });
+//       }
+//
+//       return res.send(userUrls);
+//     });
+//   });
+// });
 
 module.exports = router;

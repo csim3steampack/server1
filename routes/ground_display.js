@@ -24,9 +24,9 @@ router.post('/', (req, res) => {
 
   const awayTeam = req.body.selectedTeam;
   const token = req.body.userToken.token;
-  const getId = TokenManager.getIDFromToken(token);
+  const userId = TokenManager.getIDFromToken(token);
 
-  User.findOne({ id: getId }, { team: 1, _id: 0 }, (err, data) => {
+  User.findOne({ id: userId }, { team: 1, _id: 0 }, (err, data) => {
     if (err) throw err;
     const homeTeam = data.team;
 
