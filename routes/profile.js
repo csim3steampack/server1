@@ -67,7 +67,7 @@ router.post('/', (req, res) => {
   }
 
   // 3. BAD leader
-  const leaderCheck = ['0', '1']
+  const leaderCheck = ['0', '1'];
   if (leaderCheck.indexOf(req.body.leader) === -1) {
     return res.status(400).json({
       error: 'BAD LEADER',
@@ -100,7 +100,7 @@ router.post('/', (req, res) => {
   }
 
   const token = req.body.userToken.token;
-  const getId = TokenManager.getIDFromToken(token);
+  const userId = TokenManager.getIDFromToken(token);
 
   const updateData = {
     username: req.body.username,
@@ -111,13 +111,13 @@ router.post('/', (req, res) => {
     foot: req.body.foot,
   };
 
-  User.findOne({ id: getId }, (err, data) => {
+  User.findOne({ id: userId }, (err, data) => {
     if (err) throw err;
 
     User.update(data, { $set: updateData }, (err) => {
       if (err) throw err;
 
-      User.findOne({ id: getId }, (err, data) => {
+      User.findOne({ id: userId }, (err, data) => {
         if (err) throw err;
         return res.json({
           success: true,
@@ -137,9 +137,9 @@ router.post('/', (req, res) => {
 router.post('/confirm', (req, res) => {
 
   const token = req.body.userToken.token;
-  const getId = TokenManager.getIDFromToken(token);
+  const userId = TokenManager.getIDFromToken(token);
 
-  User.findOne({ id: getId }, (err, data) => {
+  User.findOne({ id: userId }, (err, data) => {
     if (err) throw err;
     return res.json({
       success: true,

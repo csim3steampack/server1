@@ -52,13 +52,13 @@ router.post('/signup', (req, res) => {
   }
 
     // 3. BAD mail
-  const mailRegex = /^[-!#$%&'*+./0-9=?A-Z^_a-z{|}~]+@[-!#$%&'*+/0-9=?A-Z^_a-z{|}~]+.[-!#$%&'*+./0-9=?A-Z^_a-z{|}~]+$/;
-  if (!mailRegex.test(req.body.mail)) {
-    return res.status(400).json({
-      eroor: 'BAD MAIL',
-      code: 3,
-    });
-  }
+  // const mailRegex = /^[-!#$%&'*+./0-9=?A-Z^_a-z{|}~]+@[-!#$%&'*+/0-9=?A-Z^_a-z{|}~]+.[-!#$%&'*+./0-9=?A-Z^_a-z{|}~]+$/;
+  // if (!mailRegex.test(req.body.mail)) {
+  //   return res.status(400).json({
+  //     eroor: 'BAD MAIL',
+  //     code: 3,
+  //   });
+  // }
 
   User.findOne({ id: req.body.id }, (err, exists) => {
     if (err) throw err;
@@ -121,13 +121,6 @@ router.post('/login', (req, res) => {
     }
 
     const tokenData = TokenManager.generateTokenData(user.id);
-    console.log(tokenData);
-    // const session = req.session;
-    // session.loginInfo = {
-    //   _id: user._id,
-    //   id: user.id,
-    // };
-    // console.log(req.session);
 
     return res.json({
       success: true,
@@ -149,10 +142,9 @@ router.post('/getinfo', (req, res) => {
   const token = req.body.userToken.token;
   // body : userToken
 
-  const getId = TokenManager.getIDFromToken(token);
+  const userId = TokenManager.getIDFromToken(token);
   console.log('token', token);
-
-  console.log('compareToken         ', getId);
+  console.log('compareToken         ', userId);
 
   // token does not exist
   if (!token) {
@@ -164,7 +156,7 @@ router.post('/getinfo', (req, res) => {
 
   return res.json({
     success: true,
-    info: getId,
+    info: userId,
   });
 });
   // if (typeof req.session.loginInfo === 'undefined') {

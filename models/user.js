@@ -26,7 +26,7 @@ const User = new Schema({
   place: String,
   playground: String,
   playdate: Date,
-  // teamImg: { data: Buffer, contentTypes: String },
+  teamImgUrl: String,
 });
 
 // use bcryptjs :  https://www.npmjs.com/package/bcryptjs#usage—sync
