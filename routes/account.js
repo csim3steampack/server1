@@ -159,22 +159,6 @@ router.post('/getinfo', (req, res) => {
     info: userId,
   });
 });
-  // if (typeof req.session.loginInfo === 'undefined') {
-  //   return res.status(401).json({
-  //     error: 1,
-  //   });
-  // }
-  //
-  // User.findOne({ _id: req.session.loginInfo._id }, (err, data) => {
-  //   if (err) {
-  //     return res.status(400).json({
-  //       error: 'NOT FIND SESSION ID',
-  //     });
-  //   }
-  //   console.log(data.id);
-  //   return res.json(data.id);
-  // });
-// });
 
 /* -----------------------------------------------
   LOGOUT: POST /api/account/logout
