@@ -88,14 +88,13 @@ router.post('/team/upload', upload.single('file'), (req, res) => {
   const token = parseToken.token;
   const userId = TokenManager.getIDFromToken(token);
 
-  User.findOne({ id: userId }, { team: 1, _id: 0 }, (err, data) => {
+  User.findOne({ id: userId }, { team: 1 }, (err, data) => {
     if (err) throw err;
 
     const teamname = data.team;
 
     const Bucket = 'steampack';
     const teamKey = `team/${teamname}.png`;
-    // const teamKey = 'danbi.png';
 
     const params = {
       Bucket,

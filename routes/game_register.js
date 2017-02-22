@@ -124,4 +124,26 @@ router.post('/delete', (req, res) => {
   });
 });
 
+
+/* -------------------------------------------------------
+  GAME RESISTER CONFIRM : POST /api/game_register/confirm
+  ERROR CODES:
+  -------------------------------------------------------
+*/
+
+
+router.post('/confirm', (req, res) => {
+
+  const token = req.body.userToken.token;
+  const userId = TokenManager.getIDFromToken(token);
+
+  User.findOne({ id: userId }, (err, data) => {
+    if (err) throw err;
+    return res.json({
+      success: true,
+      data,
+    });
+  });
+});
+
 module.exports = router;
