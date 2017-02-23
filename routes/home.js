@@ -4,10 +4,10 @@ const TokenManager = require('../TokenManager');
 
 const router = express.Router();
 
-const token = req.body.userToken.token;
-const userId = TokenManager.getIDFromToken(token);
-
 router.post('/', (req, res) => {
+  const token = req.body.userToken.token;
+  const userId = TokenManager.getIDFromToken(token);
+
   User.find({
     id: { $ne: userId },
     leader: { $exists: true },
