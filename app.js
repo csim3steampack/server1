@@ -1,7 +1,7 @@
 // hello sanghun!
 // const WebpackDevServer = require('webpack-dev-server');
 // const webpack = require('webpack');
-
+const fallback = require('express-history-api-fallback')
 const express = require('express');
 const cors = require('cors');
 // const http = require('http');
@@ -24,12 +24,16 @@ const api = require('./routes/index');
 // ---------------------express server---------------------------
 const app = express();
 const port = 4000;
+const root = path.join(__dirname, '../client/client-side/build');
+app.use(express.static(root));
+app.use(fallback('index.html', {root:root}));
+
 app.use(cors());
 // ------------- 서버 변수 설정 및 static으로 public 폴더 설정  ----------- //
 
 // app.set('port', config.server_port);
-// app.use('../client/client-side/public', express.static(path.join(__dirname, 'public')));
-app.use('./public', express.static(path.join(__dirname, 'public')))
+// app.use(express.static(path.join(__dirname, '../client/client-side/build')));
+
 
 // bodyParser : request 객체에 body 속성을 부여함!!
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -56,6 +60,15 @@ app.use(session({
   saveUninitialized: true,
 }));
 
+/*
+app.use((req, res, next) => {
+  if (!req.originalUrl.includes('/dist/', 0)) {
+    res.sendFile(`${__dirname}/app/index.html`);
+  } else {
+    next();
+  }
+});
+*/
 // ---------------------use imagme----------------------------- //
 // app.use(multer({
 //   dest: './uploads/',
